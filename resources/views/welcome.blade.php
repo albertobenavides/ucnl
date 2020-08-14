@@ -10,12 +10,14 @@
                 <div class="card-body">
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
+                            <button type="button" class="close" data-dismiss="alert">x</button>
                             {{ session('status') }}
                         </div>
                     @endif
                     @if ($errors->any())
                         @foreach ($errors->all() as $error)
                             <div class="alert alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">x</button>
                                 {{ $error }}
                             </div>
                         @endforeach
@@ -23,7 +25,9 @@
 
                     <form action="/actas" method="post" enctype="multipart/form-data" id="actas">
                         @csrf
-                        <div class="custom-file">
+                        <p>Recuerda sólo seleccionar los totales al momento de exportar tus actas.</p>
+                        <img src="tutorial.png" class="img-fluid">
+                        <div class="custom-file mt-3">
                             <input type="file" name="reporte" class="custom-file-input" lang="es" required>
                             <label class="custom-file-label">Reporte en Excel o CSV</label>
                         </div>

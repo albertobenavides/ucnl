@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ActasExport;
 use App\Imports\ReportesImport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use stdClass;
 
 class ReporteController extends Controller
 {
-    public function NuevaActa(Request $request)
-    {
+    public function NuevaActa(Request $request){
         $request->validate([
             'reporte' => 'required|mimes:xlsx',
             'nivel' => 'required'
@@ -71,6 +71,9 @@ class ReporteController extends Controller
                     case 9:
                         $r->total_s = 'NUEVE';
                         break;
+                    case 10:
+                        $r->total_s = 'DIEZ';
+                        break;
                 }
 
                 if ($request->nivel != 'mae'){
@@ -112,15 +115,63 @@ class ReporteController extends Controller
                 $c->add($r);
             };
 
+            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+            $formato = $request->nivel != 'mae' ? "formato_lic.xlsx" : "formato_mae.xlsx";
+            $spreadsheet = $reader->load($formato);
+            $s = 0;
+            $sheet = $spreadsheet->getSheet($s);
+            switch ($request->nivel) {
+                case 'bac':
+                    $nivel = "BACHILLERATO";
+                    break;
+                case 'lic':
+                    $nivel = "LICENCIATURA";
+                    break;
+                case 'mae':
+                    $nivel = "MAESTRÍA";
+                    break;
+                                
+            }
+            $sheet->setCellValue("D2", $nivel);
+
+            $i = 11;
+            foreach ($c->sortBy('mat') as $t) {
+                $sheet->setCellValue("B$i", $t->mat);
+                $sheet->setCellValue("C$i", $t->nombre);
+                $sheet->setCellValue("D$i", $t->apellido);
+                $sheet->setCellValue("E$i", $t->actividades);
+                $sheet->setCellValue("F$i", $t->parcial);
+                $sheet->setCellValue("G$i", $t->final);
+                $sheet->setCellValue("H$i", $t->total);
+                $sheet->setCellValue("I$i", $t->total_s);
+                if ($request->nivel != 'mae'){
+                    $sheet->setCellValue("J$i", $t->extra);
+                    $sheet->setCellValue("K$i", $t->extra_s);
+                }
+
+                $i += 1;
+
+                if ($i == 71){
+                    $i = 11;
+                    $s += 1;
+                    $sheet = $spreadsheet->getSheet($s);
+                }
+            }
+
             $nombre = 'acta_' . request()->file('reporte')->getClientOriginalName();
 
-            return $c->sortBy('id')->downloadExcel(
-                $nombre,
-                $writerType = null,
-                $headings = true
-            );
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment;filename="'. $nombre .'"');
+            header('Cache-Control: max-age=0');
+
+            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+            $writer->save('php://output');
+
         } catch (\Throwable $th) {
-            throw $th;
+            return redirect('/')->withErrors([
+                'message1'=>'Error al leer el archivo',
+                'message2'=>'Asegúrate de seleccionar todos los totales antes de exportar',
+            ]);
         }
     }
 }
