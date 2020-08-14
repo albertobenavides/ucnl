@@ -39,25 +39,16 @@ class ReporteController extends Controller
 
                 $total = $request->nivel != 'mae' ? 9 : 7;
                 
-                $r->total = round($row[$total]);
-                switch (round($row[$total])) {
+                if ($row[$total] > 0 && $row[$total] < 5.5){
+                    $r->total = 5;
+                    $r->total_s = 'CINCO';
+                } else {
+                    $r->total = round($row[$total]);
+                }
+
+                switch ($r->total) {
                     case 0:
-                        $r->total_s = $row[$total] > 0 ? 'CINCO' : 'NC';
-                        break;
-                    case 1:
-                        $r->total_s = 'CINCO';
-                        break;
-                    case 2:
-                        $r->total_s = 'CINCO';
-                        break;
-                    case 3:
-                        $r->total_s = 'CINCO';
-                        break;
-                    case 4:
-                        $r->total_s = 'CINCO';
-                        break;
-                    case 5:
-                        $r->total_s = 'CINCO';
+                        $r->total_s = 'NC';
                         break;
                     case 6:
                         $r->total_s = 'SEIS';
