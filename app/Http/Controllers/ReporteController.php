@@ -69,22 +69,26 @@ class ReporteController extends Controller
 
                 if ($request->nivel != 'mae'){
                     $r->extra = round($row[8]);
-                    switch (round($row[8])) {
+                    switch ($r->extra) {
                         case 0:
                             $r->extra_s = '';
                             $r->extra = '';
                             break;
                         case 1:
                             $r->extra_s = 'CINCO';
+                            $r->extra = 5;
                             break;
                         case 2:
                             $r->extra_s = 'CINCO';
+                            $r->extra = 5;
                             break;
                         case 3:
                             $r->extra_s = 'CINCO';
+                            $r->extra = 5;
                             break;
                         case 4:
                             $r->extra_s = 'CINCO';
+                            $r->extra = 5;
                             break;
                         case 5:
                             $r->extra_s = 'CINCO';
@@ -99,7 +103,12 @@ class ReporteController extends Controller
                             $r->extra_s = 'OCHO';
                             break;
                         case 9:
-                            $r->extra_s = 'NUEVE';
+                            $r->extra_s = 'OCHO';
+                            $r->extra = 8;
+                            break;
+                        case 10:
+                            $r->extra_s = 'OCHO';
+                            $r->extra = 8;
                             break;
                     }
                 }
