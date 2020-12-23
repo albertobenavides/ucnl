@@ -7,10 +7,11 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'UCNL - Actas') }}</title>
 
     <!-- Scripts -->
-    <script src="/js/app.js" defer></script>
+    <script src="/js/app.js"></script>
+    @yield('scripts')
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">

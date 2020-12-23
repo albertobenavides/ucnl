@@ -1,12 +1,26 @@
 @extends('layouts.app')
 
+@section('scripts')
+    <script>
+        $(function() {
+            $('#tutorial').on('hidden.bs.collapse', function () {
+                $('#tutorial-gif').removeAttr('src', '');
+                $('#tutorial-button').html('Mostrar tutorial');
+            });
+            $('#tutorial').on('show.bs.collapse', function () {
+                $('#tutorial-gif').attr('src', '/tutorial.gif');
+                $('#tutorial-button').html('Ocultar tutorial');
+            });
+        });
+    </script>
+@endsection
+
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">Generar Actas</div>
-
                 <div class="card-body">
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
@@ -22,16 +36,23 @@
                             </div>
                         @endforeach
                     @endif
-
                     <form action="/actas" method="post" enctype="multipart/form-data" id="actas">
                         @csrf
-                        <p>Recuerda sólo seleccionar los totales al momento de exportar tus actas.</p>
-                        <img src="tutorial.png" class="img-fluid">
+                        <p>Recuerda sólo seleccionar los totales (y el Examen extraordinario para Bachillerato y Licenciatura) al momento de exportar tus actas.</p>
+                        <p>
+                            <button id="tutorial-button" class="btn btn-sm btn-info text-white" type="button" data-toggle="collapse" data-target="#tutorial" aria-expanded="false" aria-controls="tutorial">
+                                Mostrar tutorial
+                            </button>
+                        </p>
+                        <div class="collapse border border-info rounded" id="tutorial">
+                            <img id="tutorial-gif" src="" class="img-fluid">
+                            <p class="mt-3">Ítems que deben estar seleccionados:</p>
+                            <img src="/tutorial.png" class="img-fluid">
+                        </div>
                         <div class="custom-file mt-3">
                             <input type="file" name="reporte" class="custom-file-input" lang="es" required>
-                            <label class="custom-file-label">Reporte en Excel o CSV</label>
+                            <label class="custom-file-label">Reporte en Excel</label>
                         </div>
-
                         <div class="input-group mt-3">
                             <div class="input-group-prepend">
                               <label class="input-group-text" for="inputGroupSelect01">Nivel</label>
@@ -43,10 +64,8 @@
                               <option value="mae">Maestría</option>
                             </select>
                           </div>
-                        
-                        <button class="btn btn-success mt-3">Generar</button>
+                        <button class="btn btn-success mt-3 {{env('APP_ENV')}}">Generar</button>
                     </form>
-
                 </div>
             </div>
         </div>

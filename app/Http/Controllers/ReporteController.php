@@ -36,14 +36,22 @@ class ReporteController extends Controller
                 $r->actividades = $request->nivel != 'mae' ? $row[5] : $row[4];
                 $r->parcial = $request->nivel != 'mae' ? $row[6] : $row[5];
                 $r->final = $request->nivel != 'mae' ? $row[7] : $row[6];
-
-                $total = $request->nivel != 'mae' ? 9 : 7;
                 
-                if ($row[$total] > 0 && $row[$total] < 5.5){
+                $total = $request->nivel != 'mae' ? 11 : 7;
+                
+                $subtotal = $row[$total];
+                
+                // Para las calificaciones extra
+                if ($request->nivel != 'mae') {
+                    $r->p_extra = $row[8];
+                    $r->video = $row[9];
+                }
+
+                if ($subtotal > 0 && $subtotal < 5.5){
                     $r->total = 5;
                     $r->total_s = 'CINCO';
                 } else {
-                    $r->total = round($row[$total]);
+                    $r->total = round($subtotal);
                 }
 
                 switch ($r->total) {
@@ -68,7 +76,7 @@ class ReporteController extends Controller
                 }
 
                 if ($request->nivel != 'mae'){
-                    $r->extra = round($row[8]);
+                    $r->extra = round($row[10]);
                     switch ($r->extra) {
                         case 0:
                             $r->extra_s = '';
@@ -116,7 +124,7 @@ class ReporteController extends Controller
             };
 
             $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
-            $formato = $request->nivel != 'mae' ? "formato_lic.xlsx" : "formato_mae.xlsx";
+            $formato = $request->nivel != 'mae' ? "formato_bac.xlsx" : "formato_mae.xlsx";
             $spreadsheet = $reader->load($formato);
             $s = 0;
             $sheet = $spreadsheet->getSheet($s);
@@ -140,13 +148,23 @@ class ReporteController extends Controller
                 $sheet->setCellValue("C$i", $t->nombre);
                 $sheet->setCellValue("D$i", $t->apellido);
                 $sheet->setCellValue("E$i", $t->actividades);
-                $sheet->setCellValue("F$i", $t->parcial);
-                $sheet->setCellValue("G$i", $t->final);
-                $sheet->setCellValue("H$i", $t->total);
-                $sheet->setCellValue("I$i", $t->total_s);
                 if ($request->nivel != 'mae'){
-                    $sheet->setCellValue("J$i", $t->extra);
-                    $sheet->setCellValue("K$i", $t->extra_s);
+                    $sheet->setCellValue("F$i", $t->p_extra);
+                    $sheet->setCellValue("G$i", $t->video);
+
+                    $sheet->setCellValue("H$i", $t->parcial);
+                    $sheet->setCellValue("I$i", $t->final);
+                    
+                    $sheet->setCellValue("J$i", $t->total);
+                    $sheet->setCellValue("K$i", $t->total_s);
+
+                    $sheet->setCellValue("L$i", $t->extra);
+                    $sheet->setCellValue("M$i", $t->extra_s);
+                } else {
+                    $sheet->setCellValue("F$i", $t->parcial);
+                    $sheet->setCellValue("G$i", $t->final);
+                    $sheet->setCellValue("H$i", $t->total);
+                    $sheet->setCellValue("I$i", $t->total_s);
                 }
 
                 $i += 1;
