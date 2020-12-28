@@ -119,6 +119,10 @@ class ReporteController extends Controller
                             $r->extra = 8;
                             break;
                     }
+                    if ($r->total >= 7) {
+                        $r->extra_s = '';
+                        $r->extra = '';
+                    }
                 }
                 $c->add($r);
             };
