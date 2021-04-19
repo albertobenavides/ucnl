@@ -302,7 +302,7 @@ class ReporteController extends Controller
             };
 
             $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
-            $formato = $request->nivel != 'mae' ? "formato_lic.xlsx" : "formato_mae.xlsx";
+            $formato = $request->nivel != 'mae' ? "formato_bac_viejo.xlsx" : "formato_mae_viejo.xlsx";
             $spreadsheet = $reader->load($formato);
             $s = 0;
             $sheet = $spreadsheet->getSheet($s);
