@@ -165,14 +165,14 @@ class ReporteController extends Controller
                     $sheet->setCellValue("L$i", $t->extra);
                     $sheet->setCellValue("M$i", $t->extra_s);
 
-                    $sheet->setCellValue("L5", env('FECHA_MAE'));
+                    $sheet->setCellValue("L5", env('FECHA_BAC'));
                 } else {
                     $sheet->setCellValue("F$i", $t->parcial);
                     $sheet->setCellValue("G$i", $t->final);
                     $sheet->setCellValue("H$i", $t->total);
                     $sheet->setCellValue("I$i", $t->total_s);
 
-                    $sheet->setCellValue("I5", env('FECHA_BAC'));
+                    $sheet->setCellValue("I5", env('FECHA_MAE'));
                 }
 
                 $i += 1;
