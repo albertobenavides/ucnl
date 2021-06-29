@@ -37,7 +37,7 @@ class ReporteController extends Controller
                 $r->parcial = $request->nivel != 'mae' ? $row[6] : $row[5];
                 $r->final = $request->nivel != 'mae' ? $row[7] : $row[6];
                 
-                $total = $request->nivel != 'mae' ? 11 : 7;
+                $total = $request->nivel != 'mae' ? 11 : 9;
                 
                 $subtotal = $row[$total];
                 
@@ -45,6 +45,9 @@ class ReporteController extends Controller
                 if ($request->nivel != 'mae') {
                     $r->p_extra = $row[8];
                     $r->video = $row[9];
+                } else {
+                    $r->p_extra = $row[7];
+                    $r->video = $row[8];
                 }
 
                 if ($subtotal > 0 && $subtotal < 5.5){
@@ -142,7 +145,6 @@ class ReporteController extends Controller
                 case 'mae':
                     $nivel = "MAESTRÍA";
                     break;
-                                
             }
             $sheet->setCellValue("D2", $nivel);
 
@@ -167,10 +169,13 @@ class ReporteController extends Controller
 
                     $sheet->setCellValue("L5", env('FECHA_BAC'));
                 } else {
-                    $sheet->setCellValue("F$i", $t->parcial);
-                    $sheet->setCellValue("G$i", $t->final);
-                    $sheet->setCellValue("H$i", $t->total);
-                    $sheet->setCellValue("I$i", $t->total_s);
+                    $sheet->setCellValue("F$i", $t->p_extra);
+                    $sheet->setCellValue("G$i", $t->video);
+
+                    $sheet->setCellValue("H$i", $t->parcial);
+                    $sheet->setCellValue("I$i", $t->final);
+                    $sheet->setCellValue("J$i", $t->total);
+                    $sheet->setCellValue("K$i", $t->total_s);
 
                     $sheet->setCellValue("I5", env('FECHA_MAE'));
                 }
