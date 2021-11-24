@@ -38,13 +38,27 @@ class ReporteController extends Controller
                 $r->final = $request->nivel != 'mae' ? $row[7] : $row[6];
                 
                 $total = $request->nivel != 'mae' ? 11 : 9;
+                if ($request->nivel == 'lic1'){
+                    $total = 12;
+                }
                 
                 $subtotal = $row[$total];
                 
                 // Para las calificaciones extra
                 if ($request->nivel != 'mae') {
-                    $r->p_extra = $row[8];
-                    $r->video = $row[9];
+                    if ($request->nivel == 'lic1'){ // Si es para primer semestre
+                        if (is_numeric($row[8])){ // Si tiene un valor numérico
+                            if (!is_numeric($r->actividades)){ // Si es '-' el valor de actividades, se pasa a 0
+                                $r->actividades = 0;
+                            }
+                            $r->actividades = floatval($r->actividades) + floatval($row[8]); // Se suma el Cuestionario diagnóstico
+                        }
+                        $r->p_extra = $row[9];
+                        $r->video = $row[10];
+                    } else {
+                        $r->p_extra = $row[8];
+                        $r->video = $row[9];
+                    }
                 } else {
                     $r->p_extra = $row[7];
                     $r->video = $row[8];
@@ -80,6 +94,9 @@ class ReporteController extends Controller
 
                 if ($request->nivel != 'mae'){
                     $r->extra = round($row[10]);
+                    if ($request->nivel == 'lic1'){
+                        $r->extra = round($row[11]);
+                    }
                     switch ($r->extra) {
                         case 0:
                             $r->extra_s = '';
@@ -135,6 +152,9 @@ class ReporteController extends Controller
             $spreadsheet = $reader->load($formato);
             $s = 0;
             $sheet = $spreadsheet->getSheet($s);
+            if ($request->nivel == 'lic1'){
+                $request->nivel = 'lic';
+            }
             switch ($request->nivel) {
                 case 'bac':
                     $nivel = "BACHILLERATO";
@@ -200,9 +220,11 @@ class ReporteController extends Controller
             $writer->save('php://output');
 
         } catch (\Throwable $th) {
+            return $th;
             return redirect('/')->withErrors([
                 'message1'=>'Error al leer el archivo',
                 'message2'=>'Asegúrate de seleccionar todos los totales antes de exportar',
+                'message3' => $th->getMessage()
             ]);
         }
     }
