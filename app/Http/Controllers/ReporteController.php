@@ -144,7 +144,7 @@ class ReporteController extends Controller
                         $r->extra = '';
                     }
                 }
-                $c->add($r);
+                $c->add($r); 
             };
 
             $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
