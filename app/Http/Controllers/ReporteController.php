@@ -199,6 +199,7 @@ class ReporteController extends Controller
 
                     $sheet->setCellValue("I5", env('FECHA_MAE'));
                 }
+                $sheet->setCellValue("D71", env('FECHA', ''));
 
                 $i += 1;
 
