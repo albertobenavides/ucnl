@@ -17,8 +17,7 @@ class ReporteController extends Controller
             'nivel' => 'required'
         ]);
 
-        try {
-            $registros = Excel::toArray(new ReportesImport, request()->file('reporte'));
+        $registros = Excel::toArray(new ReportesImport, request()->file('reporte'));
 
             $registros = $registros[0];
 
@@ -68,7 +67,7 @@ class ReporteController extends Controller
                     $r->total = 5;
                     $r->total_s = 'CINCO';
                 } else {
-                    $r->total = round($subtotal);
+                    $r->total = round(floatval($subtotal));
                 }
 
                 switch ($r->total) {
@@ -219,15 +218,6 @@ class ReporteController extends Controller
 
             $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
             $writer->save('php://output');
-
-        } catch (\Throwable $th) {
-            return $th;
-            return redirect('/')->withErrors([
-                'message1'=>'Error al leer el archivo',
-                'message2'=>'Asegúrate de seleccionar todos los totales antes de exportar',
-                'message3' => $th->getMessage()
-            ]);
-        }
     }
 
     public function ViejaActa(Request $request){
