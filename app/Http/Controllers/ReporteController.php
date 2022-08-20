@@ -93,9 +93,9 @@ class ReporteController extends Controller
                 }
 
                 if ($request->nivel != 'mae'){
-                    $r->extra = round($row[10]);
+                    $r->extra = round(floatval($row[10]));
                     if ($request->nivel == 'lic1'){
-                        $r->extra = round($row[11]);
+                        $r->extra = round(floatval($row[11]));
                     }
                     switch ($r->extra) {
                         case 0:
