@@ -64,8 +64,8 @@
                                     <option value="lic">Licenciatura</option>
                                     <option value="mae">Maestría</option>
                                 </optgroup>
-                                <optgroup label="Sólo Primero Licenciatura">
-                                    <option value="lic1">Primero Licenciatura</option>
+                                <optgroup label="Sólo Licenciatura">
+                                    <option value="lic1">Licenciatura SCORM</option>
                                 </optgroup>
                             </select>
                         </div>
